@@ -29,14 +29,20 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetFloat("velocityY",rb.velocity.y);
         anim.SetBool("isGround", physicsCheak.isGround);
         anim.SetBool("isCrouch", playerController.isCrouch);
+        anim.SetBool("isDead", playerController.isDead);
+        anim.SetBool("isAttack", playerController.isAttack);
+       
     }
     public void PlayHurt()
     {
         anim.SetTrigger("hurt");
-        Debug.Log("Κά»χ"); 
+        
     }
 
-
+    public void PlayAttack()
+    {
+        anim.SetTrigger("attack");
+    }
 
 
 }

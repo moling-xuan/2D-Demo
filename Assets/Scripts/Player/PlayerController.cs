@@ -14,20 +14,45 @@ public class PlayerController : MonoBehaviour
 
     private PhysicsCheak physicsCheak;
 
+    private PlayerAnimation playerAnimation;
+
     public Vector2 inputDirection;
-    
+
+    private Vector2 originalOffset;
+
+    private Vector2 originalSize;
+
+
+
+
     [Header("人物属性基本参数")]
     public float speed;
 
     public float jumpForce;
-    private float walkspeed=>speed/2.5f;
+
+    public float hurtForce;
+    private float walkspeed => speed / 2.5f;
 
     private float runspeed;
 
+
+    [Header("状态")]
     public bool isCrouch;
 
-    private Vector2 originalOffset;
-    private Vector2 originalSize;
+    public bool isHurt;
+
+    public bool isAttack;
+
+    public bool isDead;
+
+    [Header("物理材质")]
+    public PhysicsMaterial2D normal;
+
+    public PhysicsMaterial2D wall;
+    
+
+
+   
 
 
 
@@ -37,6 +62,7 @@ public class PlayerController : MonoBehaviour
         inputControl = new PlayInputControl();
         physicsCheak = GetComponent<PhysicsCheak>();
         coll = GetComponent<CapsuleCollider2D>();
+        playerAnimation = GetComponent<PlayerAnimation>();
 
         originalOffset = coll.offset;
         originalSize = coll.size;
@@ -60,6 +86,10 @@ public class PlayerController : MonoBehaviour
             }
         };
         #endregion   
+        //攻击
+        inputControl.Gameplay.Attack.started += PlayerAttack;
+
+
 
     }
 
@@ -75,12 +105,14 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        inputDirection = inputControl.Gameplay.Move.ReadValue<Vector2>();
         
+        inputDirection = inputControl.Gameplay.Move.ReadValue<Vector2>();
+        CheakState();
     }
     private void FixedUpdate()
     {
-        Move();
+        if(!isHurt&&!isAttack)
+          Move();
     }
     
     public void Move()
@@ -124,11 +156,33 @@ public class PlayerController : MonoBehaviour
         if(physicsCheak.isGround)
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
+    private void PlayerAttack(InputAction.CallbackContext context)
+    {
+        playerAnimation.PlayAttack();
+        isAttack = true;
+        
+    }
+    #region UnityEvent
+    public void GetHurt(Transform attacker)
+    {
+        isHurt = true;
+        rb.velocity = Vector2.zero;
+        Vector2 dir = new Vector2((transform.position.x-attacker.position.x),0).normalized;
+        rb.AddForce(dir * hurtForce, ForceMode2D.Impulse); 
 
+    }
+    public void PlayerDead()
+    {
+        isDead = true;
+        inputControl.Gameplay.Disable();
 
+    }
 
-
-
+    #endregion
+    private void CheakState()
+    {
+        coll.sharedMaterial = physicsCheak.isGround ? normal : wall;
+    }
 
 
 

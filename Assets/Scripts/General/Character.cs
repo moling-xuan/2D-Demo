@@ -17,6 +17,8 @@ public class Character : MonoBehaviour
     public bool invulnerable;
 
     public UnityEvent<Transform> OnTakeDamage;
+
+    public UnityEvent OnDie;
     private void Start() 
     {
         CurrentHp = MaxHp;
@@ -46,6 +48,8 @@ public class Character : MonoBehaviour
         else 
         {
             CurrentHp = 0;//À¿Õˆ
+            OnDie?.Invoke();
+
         }
 
    
