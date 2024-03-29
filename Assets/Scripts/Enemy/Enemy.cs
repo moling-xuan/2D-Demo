@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), (typeof(Animator)), (typeof(PhysicsCheak)))] 
 public class Enemy : MonoBehaviour
 {
-    Rigidbody2D rb;
+    [HideInInspector] public Rigidbody2D rb;
 
     [HideInInspector] public Animator anim;
 
@@ -25,6 +25,8 @@ public class Enemy : MonoBehaviour
     public Vector3 faceDir;
 
     public Transform attacker;
+
+    public Vector3 spwanPoint;
     [Header("检测参数")]
     public Vector2 centerOffset;
     public Vector2 checkSize;
@@ -52,7 +54,9 @@ public class Enemy : MonoBehaviour
 
     protected BaseState currentState;
 
-    protected BaseState chaseState; 
+    protected BaseState chaseState;
+
+    protected BaseState skillState;
 
 
     protected virtual void Awake()
@@ -63,6 +67,7 @@ public class Enemy : MonoBehaviour
         currentSpeed = normalSpeed;
 
         waitTimeCounter = waitTime;
+        spwanPoint = transform.position;
 
     }
 
@@ -80,10 +85,11 @@ public class Enemy : MonoBehaviour
 
     } 
     private void FixedUpdate() 
-    {
-        if(!isHurt&&!isDead&&!wait)
-        Move();
+    { 
         currentState.PhysicsUpdate();
+        if (!isHurt && !isDead && !wait)
+            Move();
+       
     }
     private void OnDisable()
     {
@@ -91,6 +97,7 @@ public class Enemy : MonoBehaviour
     }
     public virtual void Move()
     {
+        if(!anim.GetCurrentAnimatorStateInfo(0).IsName("SnailPreMove")&& !anim.GetCurrentAnimatorStateInfo(0).IsName("SnailRecover"))
         rb.velocity = new Vector2(currentSpeed * faceDir.x * Time.deltaTime, rb.velocity.y);
     }
 
@@ -119,7 +126,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    public bool FoundPlayer()
+    public virtual bool FoundPlayer()
     {
         return Physics2D.BoxCast(transform.position + (Vector3)centerOffset, checkSize, 0, faceDir, checkDistance, attackLayer);
     }
@@ -129,14 +136,21 @@ public class Enemy : MonoBehaviour
         {
             NPCState.Patrol => patrolState,
             NPCState.Chase => chaseState,
+            NPCState.Skill => skillState,
             _ => null
 
-        };
+        } ;
 
         currentState.OnExit();
         currentState = newState;
         currentState.OnEnter(this);
     }
+    public virtual Vector3 GetNewPoint()
+    {
+        return transform.position;
+    }
+
+
 
     #region 事件执行方法
     public void OnTakeDamage(Transform attackTrans)
@@ -178,7 +192,7 @@ public class Enemy : MonoBehaviour
     }
     #endregion 方法
 
-    private void OnDrawGizmosSelected()
+    public virtual void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(transform.position + (Vector3)centerOffset+new Vector3(checkDistance* -transform.localScale.x,0), 0.2f);
     }

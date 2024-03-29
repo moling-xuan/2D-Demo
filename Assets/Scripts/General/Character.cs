@@ -12,7 +12,7 @@ public class Character : MonoBehaviour
     [Header("нч╣п")]
     public float invulnerableDuration;
 
-    private float invulnerableCounter;
+    public float invulnerableCounter;
 
     public bool invulnerable;
 

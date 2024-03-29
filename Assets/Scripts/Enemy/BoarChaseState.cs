@@ -28,9 +28,9 @@ public class BoarChaseState: BaseState
         currentEnemy.anim.SetBool("Run", false);
         currentEnemy.lostTimeCounter = currentEnemy.lostTime;
     }
-
+     
     public override void PhysicsUpdate()
     {
-        
+       
     }
 }

@@ -30,7 +30,7 @@ public class BoarPatrolState : BaseState
     
     public override void PhysicsUpdate()
     {
-      
+        
     }
     public override void OnExit()
     {
