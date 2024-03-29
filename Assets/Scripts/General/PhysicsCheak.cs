@@ -18,19 +18,19 @@ public class PhysicsCheak : MonoBehaviour
     public Vector2 bottomOffset;
 
     public Vector2 rightOffset;
-    public Vector2 leftOffset; 
+    public Vector2 leftOffset;
 
     public LayerMask groundLayer;
 
-    
+
     private void Awake()
     {
         coll = GetComponent<CapsuleCollider2D>();
         if (!manual)
         {
-            
+
             rightOffset = new Vector2((coll.bounds.size.x + coll.offset.x) / 2, coll.bounds.size.y / 2);
-            leftOffset = new Vector2(-rightOffset.x,rightOffset.y);
+            leftOffset = new Vector2(-rightOffset.x, rightOffset.y);
         }
     }
     public void Update()
@@ -41,20 +41,20 @@ public class PhysicsCheak : MonoBehaviour
     public void Cheak()
     {
         //ºÏ≤‚µÿ√Ê
-        isGround=  Physics2D.OverlapCircle((Vector2)transform.position+bottomOffset, cheakRaduis, groundLayer);
+        isGround = Physics2D.OverlapCircle((Vector2)transform.position +new Vector2(bottomOffset.x*transform.localScale.x,bottomOffset.y) , cheakRaduis, groundLayer);
         //«ΩÃÂ≈–∂œ  
 
-        touchLeftWall = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, cheakRaduis,groundLayer); 
-        touchRightWall = Physics2D.OverlapCircle((Vector2)transform.position +rightOffset, cheakRaduis, groundLayer); 
+        touchLeftWall = Physics2D.OverlapCircle((Vector2)transform.position + new Vector2(leftOffset.x,leftOffset.y), cheakRaduis, groundLayer);
+        touchRightWall = Physics2D.OverlapCircle((Vector2)transform.position +new Vector2(rightOffset.x,rightOffset.y),cheakRaduis, groundLayer);
     }
     private void OnDrawGizmosSelected()
     {
 
-        Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, cheakRaduis);
-        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, cheakRaduis);
-        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, cheakRaduis);
+        Gizmos.DrawWireSphere((Vector2)transform.position + new Vector2(bottomOffset.x * transform.localScale.x, bottomOffset.y), cheakRaduis);
+        Gizmos.DrawWireSphere((Vector2)transform.position + new Vector2(rightOffset.x, rightOffset.y), cheakRaduis);
+        Gizmos.DrawWireSphere((Vector2)transform.position + new Vector2(leftOffset.x, leftOffset.y), cheakRaduis);
+
+
+
     }
-
-
-
 }

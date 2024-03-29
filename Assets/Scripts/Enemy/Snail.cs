@@ -2,18 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boar : Enemy
+public class Snail : Enemy
 {
-
     protected override void Awake()
     {
         base.Awake();
-        patrolState = new BoarPatrolState();
-        chaseState = new BoarChaseState();
+        patrolState = new SnailPatroState();
     }
 
-
-
-
-
-}
+}   
