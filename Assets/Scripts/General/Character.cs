@@ -9,6 +9,12 @@ public class Character : MonoBehaviour
     public float MaxHp;
 
     public float CurrentHp;
+
+    public float maxPower;
+
+    public float currentPower;
+
+    public float powerRecoverSpeed;
     [Header("нч╣п")]
     public float invulnerableDuration;
 
@@ -16,12 +22,16 @@ public class Character : MonoBehaviour
 
     public bool invulnerable;
 
+    public UnityEvent<Character> OnHealthChange; 
+
     public UnityEvent<Transform> OnTakeDamage;
 
     public UnityEvent OnDie;
     private void Start() 
     {
         CurrentHp = MaxHp;
+        currentPower = maxPower;
+        OnHealthChange?.Invoke(this);
     }
     private void Update()
     {
@@ -32,6 +42,10 @@ public class Character : MonoBehaviour
             {
                 invulnerable = false;
             }
+        }
+        if (currentPower < maxPower)
+        {
+            currentPower += Time.deltaTime * powerRecoverSpeed;
         }
     }
     public void TakeDamage(Attack attacker)
@@ -51,7 +65,7 @@ public class Character : MonoBehaviour
             OnDie?.Invoke();
 
         }
-
+        OnHealthChange?.Invoke(this);
    
     }
     private void TriggerInvulnerable()
@@ -64,7 +78,11 @@ public class Character : MonoBehaviour
         }
            
     }
-
-
+    public void OnSlide(int cost)
+    {
+        currentPower -= cost;
+        OnHealthChange?.Invoke(this);
+    }
+        
 
 }

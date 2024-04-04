@@ -7,7 +7,7 @@ public class BoarChaseState: BaseState
     public override void OnEnter(Enemy enemy)
     {
         currentEnemy = enemy;
-        Debug.Log("chase");
+        
         currentEnemy.currentSpeed = currentEnemy.chaseSpeed;
         currentEnemy.anim.SetBool("Run",true);
     }
