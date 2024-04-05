@@ -64,9 +64,9 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         physicsCheak = GetComponent<PhysicsCheak>();
-        currentSpeed = normalSpeed;
+        currentSpeed = normalSpeed; 
 
-        waitTimeCounter = waitTime;
+        //waitTimeCounter = waitTime;
         spwanPoint = transform.position;
 
     }
