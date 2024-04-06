@@ -71,6 +71,15 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Confrim"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a42bb94-788d-49af-b9d7-51b05bbe4abc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -258,6 +267,17 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Slide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""870cd1b7-16ca-4311-9076-2a466e56761b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confrim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -850,6 +870,7 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
         m_Gameplay_WalkBotton = m_Gameplay.FindAction("Walk Botton", throwIfNotFound: true);
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
         m_Gameplay_Slide = m_Gameplay.FindAction("Slide", throwIfNotFound: true);
+        m_Gameplay_Confrim = m_Gameplay.FindAction("Confrim", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -928,6 +949,7 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_WalkBotton;
     private readonly InputAction m_Gameplay_Attack;
     private readonly InputAction m_Gameplay_Slide;
+    private readonly InputAction m_Gameplay_Confrim;
     public struct GameplayActions
     {
         private @PlayInputControl m_Wrapper;
@@ -937,6 +959,7 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
         public InputAction @WalkBotton => m_Wrapper.m_Gameplay_WalkBotton;
         public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
         public InputAction @Slide => m_Wrapper.m_Gameplay_Slide;
+        public InputAction @Confrim => m_Wrapper.m_Gameplay_Confrim;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -961,6 +984,9 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
             @Slide.started += instance.OnSlide;
             @Slide.performed += instance.OnSlide;
             @Slide.canceled += instance.OnSlide;
+            @Confrim.started += instance.OnConfrim;
+            @Confrim.performed += instance.OnConfrim;
+            @Confrim.canceled += instance.OnConfrim;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -980,6 +1006,9 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
             @Slide.started -= instance.OnSlide;
             @Slide.performed -= instance.OnSlide;
             @Slide.canceled -= instance.OnSlide;
+            @Confrim.started -= instance.OnConfrim;
+            @Confrim.performed -= instance.OnConfrim;
+            @Confrim.canceled -= instance.OnConfrim;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -1167,6 +1196,7 @@ public partial class @PlayInputControl: IInputActionCollection2, IDisposable
         void OnWalkBotton(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnSlide(InputAction.CallbackContext context);
+        void OnConfrim(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
