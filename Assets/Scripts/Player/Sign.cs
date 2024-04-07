@@ -46,7 +46,10 @@ public class Sign : MonoBehaviour
         InputSystem.onActionChange += OnActionChange;
         playerInput.Gameplay.Confrim.started += OnConfrim;
     }
-
+    private void OnDisable()
+    {
+        canPress = false;
+    }
     private void OnConfrim(InputAction.CallbackContext obj)
     {
         if (canPress)

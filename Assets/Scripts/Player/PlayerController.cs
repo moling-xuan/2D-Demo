@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDisable()
     {
-        inputControl.Disable();
+        inputControl.Disable(); 
     }
     private void Update()
     {

@@ -166,6 +166,7 @@ public class Enemy : MonoBehaviour
         }
         //±»»÷ÍË
         isHurt = true;
+        
         anim.SetTrigger("Hurt");
         Vector2 dir = new Vector2(transform.position.x - attackTrans.position.x, 0).normalized;
         rb.velocity = new Vector2(0, rb.velocity.y);
