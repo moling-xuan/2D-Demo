@@ -7,25 +7,31 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
-public class ScenesLoader : MonoBehaviour
+public class ScenesLoader : MonoBehaviour,ISaveavle
 {
     public Transform playerTransform;
 
     public Vector3  firstPosition;
 
+    public Vector3 menuPosition;
+
 
     [Header("事件监听")]
 
     public ScenesLoadEventSO loadEventSO;
-
-
+    public VoidEventSO newGameEvent;
+    public VoidEventSO backToMenuEvent;
+    [Header("场景")]
+    
+    public GameScenesSO menuScene;
     public GameScenesSO fristLoadScene;
-
+    private  GameScenesSO currentLoadedScene;
+    private  GameScenesSO scenesToGo;
     [Header("广播")]
     public VoidEventSO afterSceneLoadedEvent;
     public FadeEventSO fadeEvent;
-    public  GameScenesSO currentLoadedScene;
-    public  GameScenesSO scenesToGo;
+
+    public ScenesLoadEventSO unloadedSceneEvent;
 
     private  Vector3 positionToGo;
     
@@ -36,30 +42,47 @@ public class ScenesLoader : MonoBehaviour
    
     public void Awake()
     {
-        
+
         //Addressables.LoadSceneAsync(fristLoadScene.sceneReference, LoadSceneMode.Additive);
         //currentLoadedScene = fristLoadScene;
         //currentLoadedScene.sceneReference.LoadSceneAsync(LoadSceneMode.Additive);
+       
     }
     private void Start()
     {
-        NewGame();
+        loadEventSO.RaiseLoadRequestEvent(menuScene, menuPosition, true);
+        //NewGame();
     }
 
     private void OnEnable()
     {
         loadEventSO.LoadRequestEvent += OnLoadRequestEvent;
+        newGameEvent.OnEventRaised += NewGame;
+        backToMenuEvent.OnEventRaised += OnBackToMenuEvent;
+        ISaveavle saveavle = this;
+        saveavle.RegisterSaveData();
     }
     private void OnDisable()
     {
         loadEventSO.LoadRequestEvent -= OnLoadRequestEvent;
+        newGameEvent.OnEventRaised -= NewGame;
+        backToMenuEvent.OnEventRaised -= OnBackToMenuEvent;
+        ISaveavle saveavle = this;
+        saveavle.UnRegisterSaveData();
     }
 
+    private void OnBackToMenuEvent()
+    {
+        scenesToGo = menuScene;
+        loadEventSO.RaiseLoadRequestEvent(scenesToGo, menuPosition, true);
+
+    }
 
     private void NewGame()
     {
         scenesToGo = fristLoadScene;
-        OnLoadRequestEvent(scenesToGo, firstPosition, true);
+        //OnLoadRequestEvent(scenesToGo, firstPosition, true);
+        loadEventSO.RaiseLoadRequestEvent(scenesToGo, firstPosition, true);
     }
 
     private void OnLoadRequestEvent(GameScenesSO locationToGo, Vector3 posToGo, bool fadeScreen)
@@ -91,7 +114,7 @@ public class ScenesLoader : MonoBehaviour
             fadeEvent.FadeIn(fadeTime);
         }
         yield return new WaitForSeconds(fadeTime);
-
+        unloadedSceneEvent.RaiseLoadRequestEvent(scenesToGo, positionToGo, true);
         yield return currentLoadedScene.sceneReference.UnLoadScene();
         //关闭人物
         playerTransform.gameObject.SetActive(false);
@@ -117,6 +140,31 @@ public class ScenesLoader : MonoBehaviour
         }
         isLoading = false;
         //场景加载完成后事件
+        if(currentLoadedScene .sceneType!=SceneType.Menu)
+
         afterSceneLoadedEvent.RaiseEvent();
+    }
+
+    DataDefinition ISaveavle.GetDataID()
+    {
+        return GetComponent<DataDefinition>();
+    }
+
+    public void GetSaveData(Data data)
+    {
+        data.SaveGameScene(currentLoadedScene);
+    }
+
+    public void LoadData(Data data)
+    {
+        var playerID = playerTransform.GetComponent<DataDefinition>().ID;
+        if (data.characterPosDict.ContainsKey(playerID))
+        {
+            positionToGo = data.characterPosDict[playerID].ToVector3 ();
+
+            scenesToGo = data.GetSavedScene();
+
+            OnLoadRequestEvent(scenesToGo, positionToGo, true);
+        }
     }
 }

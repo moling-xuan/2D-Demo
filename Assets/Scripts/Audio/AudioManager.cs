@@ -10,24 +10,45 @@ public class AudioManager : MonoBehaviour
     [Header("事件监听")]
     public PlayAudioEventSO FXEvent;
     public PlayAudioEventSO BGMEvent;
+    public FolatEventSO volumeEvent;
+    public VoidEventSO pauseEvent;
+    [Header("广播")]
+    public FolatEventSO syncVolumeEvent;
     [Header("组件")]
     public AudioSource BGMSource;
 
     public AudioSource FXSource;
+    public AudioMixer mixer; 
 
     private void OnEnable()
     {
         FXEvent.OnEventRaised += OnFXEvent;
         BGMEvent.OnEventRaised += OnBGMEvent;
+        volumeEvent.OnEventRaised += OnVolumeEvent;
+        pauseEvent.OnEventRaised += OnpauseEvent;
     }
 
-  
-
+   
     private void OnDisable()
     {
         FXEvent.OnEventRaised -= OnFXEvent;
         BGMEvent.OnEventRaised -= OnBGMEvent;
+        volumeEvent.OnEventRaised -= OnVolumeEvent;
+        pauseEvent.OnEventRaised -= OnpauseEvent;
+    } 
+    private void OnpauseEvent()
+    {
+        float amount;
+        mixer.GetFloat("MasterVolume", out amount);
+        syncVolumeEvent.RaiseEvent(amount );
     }
+
+
+    private void OnVolumeEvent(float amount)
+    {
+        mixer.SetFloat("MasterVolume", amount * 100 - 80);
+    }
+
     private void OnBGMEvent(AudioClip clip)
     {
         BGMSource.clip = clip;

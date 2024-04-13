@@ -6,5 +6,10 @@ public enum NPCState
 }
 public enum SceneType
 { 
-    loaction,Meny
+    loaction,Menu
+}
+public enum PersistentType
+{
+    ReadWrite,
+    DoNotPersist
 }

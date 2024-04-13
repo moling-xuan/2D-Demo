@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UnityLinker;
+
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), (typeof(Animator)), (typeof(PhysicsCheak)))] 
 public class Enemy : MonoBehaviour

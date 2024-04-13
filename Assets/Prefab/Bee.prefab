@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7593978554023652100}
   - component: {fileID: 5870485010265935008}
   - component: {fileID: 8133939410133041247}
+  - component: {fileID: 4744391533528532541}
   m_Layer: 8
   m_Name: Bee
   m_TagString: Untagged
@@ -263,6 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c853f681ff07114eb0bcdee90442e5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  newGameEvent: {fileID: 11400000, guid: 0feafa9117008f041aa77b39a8c15f79, type: 2}
   MaxHp: 30
   CurrentHp: 0
   maxPower: 0
@@ -328,6 +330,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4744391533528532541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908386406306582137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1798bce490e824e46837ad776caf1526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  persistentType: 0
+  ID: 69dcc014-1cd8-467c-8538-18e1b3101ad9
 --- !u!1 &6762074385514429637
 GameObject:
   m_ObjectHideFlags: 0

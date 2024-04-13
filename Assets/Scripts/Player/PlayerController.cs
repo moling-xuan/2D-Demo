@@ -6,6 +6,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("ÊÂ¼þ¼àÌý")]
+    public ScenesLoadEventSO sceneLoadEvent;
+    public VoidEventSO afterSceneloadEvent;
+    public VoidEventSO loadDataEvent;
+    public VoidEventSO backToMenuEvent;
+
     public PlayInputControl inputControl;
 
     private Rigidbody2D rb;
@@ -97,7 +103,7 @@ public class PlayerController : MonoBehaviour
         //¹¥»÷
         inputControl.Gameplay.Attack.started += PlayerAttack;
         inputControl.Gameplay.Slide.started += Slide;
-
+        inputControl.Enable();
 
     }
 
@@ -105,12 +111,25 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        inputControl.Enable();
+        
+        sceneLoadEvent.LoadRequestEvent += OnloadEvent;
+        afterSceneloadEvent.OnEventRaised += OnAfterSceneLoadEvent;
+        loadDataEvent.OnEventRaised  += OnloadDataEvent;
+        backToMenuEvent.OnEventRaised += OnloadDataEvent;
     }
+
+   
+
     private void OnDisable()
     {
-        inputControl.Disable(); 
+        inputControl.Disable();
+        sceneLoadEvent.LoadRequestEvent -= OnloadEvent;
+        afterSceneloadEvent.OnEventRaised -= OnAfterSceneLoadEvent;
+        loadDataEvent.OnEventRaised  -= OnloadDataEvent;
+        backToMenuEvent.OnEventRaised -= OnloadDataEvent;
     }
+
+   
     private void Update()
     {
         
@@ -122,7 +141,20 @@ public class PlayerController : MonoBehaviour
         if(!isHurt&&!isAttack)
           Move();
     }
-    
+    private void OnAfterSceneLoadEvent()
+    {
+        inputControl.Gameplay.Enable();
+    }
+
+    private void OnloadEvent(GameScenesSO arg0, Vector3 arg1, bool arg2)
+    {
+        inputControl.Gameplay.Disable();
+    } 
+    private void OnloadDataEvent()
+    {
+        isDead = false;
+    }
+
     public void Move()
     {
         if(!isCrouch&&!wallJump) 
